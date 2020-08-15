@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>once upon a datum - projects</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">once upon a datum </a></h1>
+                <nav><ul>
+                    <li><a href="/pages/about.html">about</a></li>
+                    <li><a href="/category/how-tos.html">how tos</a></li>
+                    <li><a href="/category/misc.html">misc</a></li>
+                    <li><a href="/category/musings.html">musings</a></li>
+                    <li class="active"><a href="/category/projects.html">projects</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/introducing-zipmigo.html">Introducing Zipmigo</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2020-05-05T00:00:00-04:00">
+                Published: Tue 05 May 2020
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/katie.html">katie</a>
+        </address>
+<p>In <a href="/category/projects.html">projects</a>.</p>
+
+</footer><!-- /.post-info --><p>Please welcome to the world my new 👶, <a href="https://github.com/kaszklar/zipmigo">zipmigo</a>! Zipmigo is a python package that aims to help analysts download and unarchive zipfiles remotely.</p>
+<p>I was recently given the opportunity to develop some notebooks for teaching GIS and spatial econometrics in python for a professor of mine. Having taken the course previously, I had a good idea of the level of exposure students had to programming and the shell. I also began using the same code over and over again to download shape file archives, which is a sure sign you should start modularizing. With all of that in mind, I began working on a script to download and unzip those archives so that students working in the cloud wouldn't have to muddle around trying to figure out why a simple http request doesn't work, or wonder where their file got unzipped to.</p>
+<p>Recrusive directory structure is one of my biggest pet peeves, so the true 🌟 of this little library is that it checks the top level of the archive and will unzip to the current directory or an appropriately named subdirectory.   </p>
+<p>You can get it via <code>pip install zipmigo</code>, and check out some example functionality in the <a href="https://github.com/kaszklar/zipmigo">read me</a>. </p>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

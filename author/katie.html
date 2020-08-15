@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>once upon a datum - katie</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">once upon a datum </a></h1>
+                <nav><ul>
+                    <li><a href="/pages/about.html">about</a></li>
+                    <li><a href="/category/how-tos.html">how tos</a></li>
+                    <li><a href="/category/misc.html">misc</a></li>
+                    <li><a href="/category/musings.html">musings</a></li>
+                    <li><a href="/category/projects.html">projects</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/stahp.html">stahp</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2020-10-10T00:00:00-04:00">
+                Published: Sat 10 October 2020
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/katie.html">katie</a>
+        </address>
+<p>In <a href="/category/misc.html">misc</a>.</p>
+
+</footer><!-- /.post-info --><p>This semester I am in a class in which we aim to analyze a “large” dataset. There is one text variable in particular that we want to draw some insight from.</p>
+<p>We had just been told how to access the dataset <em>minutes</em> ago, and something along the lines of the below goes down.</p>
+<blockquote>
+<p>Professor: So how is it going? Any issues loading the data? Does anyone have any immediate insights? 
+Student 1: I made a word cloud for [variable of interest]... the most common words seem to be foo, bar, baz.
+Student 2: I made a word cloud of [another string column] and the most common words are quz, fred, flob...
+Professor: Great! [continues to lecture]
+Me, after class to the prof: Have you already done analysis on this dataset? Did you know that [variable of interest] is 68% null?
+Professor: Actually, no. I haven't looked at it yet. That's... certainly good to know. [Proceeds to drop some more knowledge on me]</p>
+</blockquote>
+<p>Next class, she called on me to bring this up, and I swear you could have heard a pin drop.</p>
+<p>As with all of my classes, there are people in there much smarter than me - they know more models or more programming packages or more <em>something</em>. The students who spoke up initially already have real world experience in the field, but they forgot the first rule in the book… ABCD! <strong>A</strong>lways <strong>B</strong>e <strong>C</strong>hecking your <strong>D</strong>ata.</p>
+<p>Why? Because your data is almost never perfectly clean. I had a dataset come through where null values were coded as a string <code>\N</code>... yeeeaaaaah.... Good luck finding that! At its most critical, your checks can alert you that something is seriously wrong. At its most benign, this can generate questions for later and give you an idea of the amount of cleaning you <em>will</em> need to do or lead to new avenues of analysis!</p>
+<p>Here are some of the things I do (to a 🐼 data frame) before I even begin:</p>
+<ul>
+<li>Call <code>.head()</code> to peak at the first few rows. You can pass a number to investigate a larger amount of rows; <code>.tail()</code> also exists.</li>
+<li>Check for nulls</li>
+<li>Double check column datatypes using <code>.info(verbose=True)</code> If memory is an issue, recast into appropriate types</li>
+<li>Maybe rename columns</li>
+<li>Make some quick histograms to check distributions</li>
+<li>Maybe adjust how your IDE displays numbers with digits, so it is more interpretable</li>
+<li>For categoricals, check the number of unique elements with <code>.nunique()</code>. Depending on the scope of your dataset, this can immediately alert you to issues with text</li>
+</ul>
+<p>I’ll close out with a quick n dirty way to visualize null values in a dataset .</p>
+<p>While this may not be practical on a larger scale without parallelized computing, you can use seaborn to create a heat map of your entire data frame. In the below example, I’ve obscured some information about what’s in there, but I will tell you that the observations are in chronological order. In the absence of meta data, I think this tells a lot about this dataset.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="k">as</span> <span class="nn">mpatches</span>
+
+<span class="c1">#create the graph</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">isnull</span><span class="p">(),</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Missing Values&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Columns&quot;</span><span class="p">)</span>
+
+<span class="c1">#create a legend</span>
+<span class="n">avail</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;available data&#39;</span><span class="p">)</span>
+<span class="n">missing</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;beige&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;missing data&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="p">[</span><span class="n">avail</span><span class="p">,</span> <span class="n">missing</span><span class="p">])</span>
+</pre></div>
+
+
+<p><img alt="null-heatmap.png" src="/images/always-be-checking/null-heatmap.png"></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/introducing-zipmigo.html" rel="bookmark"
+                           title="Permalink to Introducing Zipmigo">Introducing Zipmigo</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2020-05-05T00:00:00-04:00">
+                Published: Tue 05 May 2020
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/katie.html">katie</a>
+        </address>
+<p>In <a href="/category/projects.html">projects</a>.</p>
+
+</footer><!-- /.post-info -->                <p>Please welcome to the world my new 👶, <a href="https://github.com/kaszklar/zipmigo">zipmigo</a>! Zipmigo is a python package that aims to help analysts download and unarchive zipfiles remotely.</p>
+<p>I was recently given the opportunity to develop some notebooks for teaching GIS and spatial econometrics in python for a professor of mine. Having taken the course …</p>
+                <a class="readmore" href="/introducing-zipmigo.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/dont-forget-your-abcds.html" rel="bookmark"
+                           title="Permalink to Don't Forget Your ABCD's">Don't Forget Your ABCD's</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2019-10-10T00:00:00-04:00">
+                Published: Thu 10 October 2019
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/katie.html">katie</a>
+        </address>
+<p>In <a href="/category/musings.html">musings</a>.</p>
+
+</footer><!-- /.post-info -->                <p>This semester I am in a class in which we aim to analyze a "large" dataset. There is one text variable in particular that we want to draw some insight from.  </p>
+<p>We had just been told how to access the dataset <em>minutes</em> ago, and something along the lines of the …</p>
+                <a class="readmore" href="/dont-forget-your-abcds.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/google-big-query-for-newbs-by-a-newb.html" rel="bookmark"
+                           title="Permalink to Google Big Query For Newbs (By a Newb)">Google Big Query For Newbs (By a Newb)</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2018-09-08T00:00:00-04:00">
+                Published: Sat 08 September 2018
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/katie.html">katie</a>
+        </address>
+<p>In <a href="/category/how-tos.html">how tos</a>.</p>
+
+</footer><!-- /.post-info -->                <blockquote>
+<p>BigQuery is a RESTful web service that enables interactive analysis of massively large datasets working in conjunction with Google Storage.<br>
+-<a href="https://en.wikipedia.org/wiki/BigQuery">Wikipedia</a></p>
+</blockquote>
+<p>Up until my final project at Metis I had always downloaded csv's and then, if they were sizable, used them to build out my own tables and database to …</p>
+                <a class="readmore" href="/google-big-query-for-newbs-by-a-newb.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
