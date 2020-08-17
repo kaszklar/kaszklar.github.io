@@ -61,7 +61,7 @@
       <li> use <code>with</code><br>
        If you modularize everything out, you can write a function that executes the run all at once.<br>
 <code>def log_logit(experimentID, run_name, params, X_train, X_test, y_train, y_test):  
-          with mlflow.start_run(experiment_id=experimentID, run_name=run_name) as run:</code>   <br>
+          with mlflow.start_run(experiment_id=exp_id, run_name=run_name) as run:</code>   <br>
        If going this route, you'll pass your params to your model using <code>(**params)</code>.<br>
       </li>
       <li> Start and end each run manually.<br>
@@ -130,10 +130,8 @@
 <p>Rise and repeat, or modularize everything out a la step 3.1 above. </p>
 <h3>Comparing results</h3>
 <p>Once you've completed your runs to your satisfaction, rev up your shell. In your working directly, run <code>mlflow ui</code>. Point your browser to <a href="http://localhost:5000/">localhost:5000</a> and you should see the user interface, which allows you to explore your results. Alternatively, the <a href="https://mlflow.org/docs/0.1.0/tracking.html#tracking-ui">tracking uri</a> can be set to point to a remote server via an env variable or <code>set_tracking_ui()</code>.  </p>
-<p>In this example, here is are my two runs.</p>
 <p><img alt="experiment homepage" src="/images/go-mlflow/runs.png"></p>
-<p>And after checking both boxes, I can compare the two side by side, metric by metric.</p>
-<p><img alt="comparison page" src="/images/go-mlflow/compare.png"></p>
+<p>On the left hand side, all of your experiments in the workspace are listed. At the top, I can add my own notes about the experiment. You can see my two previous runs listed in the table. I can download them all to a csv, or use the 'compare' button at the top of the table allows for a side-by-side, metric-by-metric comparison, including some built in contour, scaling, and parallel coordinate plots for chosing the best model for your question at hand.</p>
 <h3>Pro Tips</h3>
 <ul>
 <li>
