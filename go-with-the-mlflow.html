@@ -43,13 +43,13 @@
 <h3>Getting Started</h3>
 <p>I'll run through a basic workflow using the famous seattle housing prices dataset, predicting whether the home is on the water or not. mlflow is available via pip or conda. </p>
 <p>There's certainly quite a bit of flexibility in how you set up your environment; you can declare one programmatically or via the command line. If you set the <code>MLFLOW_EXPERIMENT_ID</code> environment variable, all the runs will infer the experiment id. Runs can be executed one at a time using with, or or individually - you could have multiple runs going on at the same time. </p>
-<p>In this experiment, I'll be using the sklearn framework, but the developers are building out frameworks for tensor flow &amp; keras, gluon, xgboost, lightgbm, and spark. I'm declaring everything programmatically, but there's also a command line interface.</p>
+<p>In this experiment, I'll be using the sklearn framework, but the developers are building out frameworks for tensor flow &amp; keras, gluon, xgboost, lightgbm, and spark. I'm declaring everything programmatically here.</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mlflow</span>
 <span class="kn">import</span> <span class="nn">mlflow.sklearn</span> 
 </pre></div>
 
 
-<p>There's a separate import statement for the sklearn module, which is specially tailored to log scikit-learn models.</p>
+<p>There's a separate import statement for the sklearn module, which is specially tailored to log and implement sklearn models.</p>
 <h3>Experiment!</h3>
 <p><ol>
   <li> Build, munge, explore, and analyse your data. Plan. </li></p>
@@ -91,7 +91,15 @@
 </pre></div>
 
 
-<p>Now, I call <code>mlflow.start_run(experiment_id=exp_id, run_name="naive backwards")</code> and start recording all of my assets for this run.</p>
+<p>Now, I call <code>mlflow.start_run(experiment_id=exp_id, run_name="naive backwards")</code> and start recording all of my assets for this run. </p>
+<p>With the tracking module, we can log;</p>
+<ul>
+<li>the models themselves</li>
+<li>model parameters</li>
+<li>metrics</li>
+<li>artifacts, and </li>
+<li>tags (a key value pair, set using <code>mlflow.set_tag()</code>, not shown here)</li>
+</ul>
 <div class="highlight"><pre><span></span><span class="c1"># log model</span>
 <span class="n">mlflow</span><span class="o">.</span><span class="n">sklearn</span><span class="o">.</span><span class="n">log_model</span><span class="p">(</span><span class="n">logit1</span><span class="p">,</span> <span class="s2">&quot;ridge logit&quot;</span><span class="p">)</span>
 
@@ -131,7 +139,7 @@
 <h3>Comparing results</h3>
 <p>Once you've completed your runs to your satisfaction, rev up your shell. In your working directly, run <code>mlflow ui</code>. Point your browser to <a href="http://localhost:5000/">localhost:5000</a> and you should see the user interface, which allows you to explore your results. Alternatively, the <a href="https://mlflow.org/docs/0.1.0/tracking.html#tracking-ui">tracking uri</a> can be set to point to a remote server via an env variable or <code>set_tracking_ui()</code>.  </p>
 <p><img alt="experiment homepage" src="/images/go-mlflow/runs.png"></p>
-<p>On the left hand side, all of your experiments in the workspace are listed. At the top, I can add my own notes about the experiment. You can see my two previous runs listed in the table. I can download them all to a csv, or use the 'compare' button at the top of the table allows for a side-by-side, metric-by-metric comparison, including some built in contour, scaling, and parallel coordinate plots for chosing the best model for your question at hand.</p>
+<p>On the left hand side, all of your experiments in the workspace are listed. At the top, I can add my own notes about the experiment. Tags will appear here as well. In the screen shot above, you can see my two previous runs listed in the table. I can download them all to a csv, or use the 'compare' button at the top of the table which allows for a side-by-side, metric-by-metric comparison, including some built in contour, scaling, and parallel coordinate plots for chosing the best model for your question at hand.</p>
 <h3>Pro Tips</h3>
 <ul>
 <li>
@@ -143,8 +151,8 @@
 <p>In the example above, I turned a matplotlib fig object into a tempfile, logged it in mlflow, and then closed the file. No messy clean up locally 👍🏼</p>
 </li>
 <li>
-<p>Before starting, consider your run naming system </p>
-<p>"naive backwards" and "lasso" really don't cut it as run names. 🤣</p>
+<p>Before starting, consider your meta data such as run names and tags </p>
+<p>"Naive backwards" and "lasso" may initially be informative names but with further development may not be as appropriate.</p>
 </li>
 </ul>
 <h3>Even more functionality...</h3>
