@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<title>Data Vault's Biggest Value Add — once upon a datum</title>
-	<meta name="description" content="Title: Data Vault's Biggest Value Add; Date: 2021-10-18; Author: katie">
+	<meta name="description" content="Title: Data Vault's Biggest Value Add; Date: 2021-10-20; Author: katie">
 	<meta name="author" content="katie">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
@@ -30,7 +30,7 @@
 		<!-- <span itemprop="author" itemscope itemtype="http://schema.org/Person">
 			<h4 itemprop="name">katie</h4>
 		</span> -->
-		<time datetime="2021-10-18T00:00:00-04:00" itemprop="datePublished">Mon 18 October 2021</time>
+		<time datetime="2021-10-20T00:00:00-04:00" itemprop="datePublished">Wed 20 October 2021</time>
 	</div>
 	<div>
 		Category:
@@ -39,19 +39,28 @@
 		</span>
 	</div>
 	<div itemprop="articleBody" class="article-body"><p>It might be safe to say that every data practitioner has heard about the star schema for data modeling, and perhaps even the snowflake schema. These approaches to data modeling "normalize" the database by reducing redundant data in each table, so that it lives separately. </p>
-<p>For example, here's a simple snowflake model for a commerce application.  </p>
+<p>For example, here's a basic modeling approach for a commerce application where, say, an employee is in charge of the sales proccess. The <strong>fact</strong> table, <code>orders</code>, is noted in red, while <strong>dimension</strong> tables for the <code>customer</code> and <code>employee</code> are in orange, and further normalized data are noted in yellow.</p>
+<p><img alt="normalized model" src="/images/data-vault/3nf-snowflake.png"></p>
 <h3>Enter... the Data Vault</h3>
-<p>The data vault approach supercharges these normalized schemas by allowing for historical tracking of records.   </p>
+<p>The data vault approach supercharges this model by allowing for historical tracking of records.   </p>
 <ul>
 <li>Rather than fact tables with dimensions, we have hubs with satellites, each with a unique link. The satellites can be further normalized, and the links are used to keep track of their mutability.</li>
 <li><em>All</em> records are stored, both good and bad, so that no information is lost.</li>
 <li>Transformations of the data are made on the way out of the vault rather than when it comes in. (Sound familiar?)</li>
 <li>And finally, hubs and satellites have a field for the <strong>loaded time stamp</strong>, as well as the <strong>source</strong> of the record.  </li>
 </ul>
-<p>There's certainly a lot more to chew on with this approach, which you can read about <a href="http://danlinstedt.com/solutions-2/data-vault-basics/">here</a>. Let's redesign that snowflake commerce model to be more in line with the data vault's historical tracking.  </p>
+<p>There's certainly a lot more to chew on with this approach, which you can read about <a href="http://danlinstedt.com/solutions-2/data-vault-basics/">here</a>. Below I've redesigned the previous model.</p>
+<p><img alt="data vault approach" src="/images/data-vault/data-vault.png"></p>
+<p>Wow that got complicated quickly! However, it's all in the name of accountability. Some things to note about the above diagram:</p>
+<ul>
+<li>Hubs refer to central business objects, and are noted in blue. </li>
+<li>Links are in purple; these are similar to other many-to-many relationship representatives, save that the use of the unique link sequence ID as well as load timestamp &amp; source will account for changes in the linking relationship.</li>
+<li>Satellites are in yellow. These contain the normalized data for the hub entities, which may or may not change over time, thus, are unique per their hub sequence id as well as the satellite load time. </li>
+</ul>
 <h4>... It's saved my butt before!</h4>
 <p>Recently I was working on a project with a batch etl pipeline. One of our users raised a red flag to us that they were seeing unexpected behavior with one of the entities in our system, that could very well have been going on for a while. </p>
 <p>Using some of the example units provided, our team was able to identify the individual records that were likely causing the issue, as well as their respective sources &amp; when they entered the warehouse. It became clear quite quickly that there was a pattern in the type of sources that were causing the issue!</p>
+<h3>Increase your accountability</h3>
 <p>This approach is just one way to bring some much needed traceability to our modern data pipelines.</p></div>
 	<!-- <hr>
 	<h2>Comments</h2>
