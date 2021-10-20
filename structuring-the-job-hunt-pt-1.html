@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Structuring the Job Hunt pt 1 — once upon a datum</title>
+	<meta name="description" content="Title: Structuring the Job Hunt pt 1; Date: 2020-11-04; Author: katie">
+	<meta name="author" content="katie">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+	<!--[if lt IE 9]>
+		<script src="/theme/html5.js"></script>
+		<![endif]-->
+	<link href="/theme/css/ipython.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/simplex/bootstrap.min.css" rel="stylesheet">
+	<link href="/theme/css/local.css" rel="stylesheet">
+	<link href="/theme/css/pygments.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+	<div class="page-header">
+		<h1><a href="/">once upon a datum</a>
+			<br>	</div>
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+<div class="article" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="text-center article-header">
+		<h1 itemprop="name headline" class="article-title">Structuring the Job Hunt pt 1</h1>
+		<!-- <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+			<h4 itemprop="name">katie</h4>
+		</span> -->
+		<time datetime="2020-11-04T00:00:00-05:00" itemprop="datePublished">Wed 04 November 2020</time>
+	</div>
+	<div>
+		Category:
+		<span itemprop="articleSection">
+			<a href="/category/projects.html" rel="category">projects</a>
+		</span>
+	</div>
+	<div itemprop="articleBody" class="article-body"><p>I have a new project that I'm swirling around in my brain. </p>
+<p>I've recently started the job hunt, and quickly became frustrated with the tools at my displosal for networking and thinking about my professional development. We've all seen beautiful visualizations detailing the journey to the offer. And there are countless resources to help those of us just starting out navigate the intimidating world of professional networking. Additionally, I've often taken "notes" that I want to remember about my people, that get buried in a virtual contact file. </p>
+<p>For my job apps and potentials, I started a spreadsheet. However, it was hard to figure out a schema that captured everything I wanted to keep track of over time, when each process had a different cadance of milestones. On top of that, long-form note taking didn't vibe with the tabular nature of a sheet. </p>
+<p>I want to keep track of several things;</p>
+<ul>
+<li><strong>People</strong><ul>
+<li>People can have any number of "sub-people," like family members</li>
+<li>They also have dates associated with them, like birthdays or professional milestones</li>
+<li>And locations, such as hometown or where you met</li>
+</ul>
+</li>
+<li><strong>Companies</strong><ul>
+<li>These have people and jobs associated with them</li>
+</ul>
+</li>
+<li><strong>Events/Moments</strong><ul>
+<li>Events are pretty arbitrary; from interviews, to conversations, to conferences</li>
+</ul>
+</li>
+<li><strong>Job applications</strong><ul>
+<li>These involve all of the above!</li>
+</ul>
+</li>
+</ul>
+<p>Say I'm recruiting for a job, and there are multiple rounds involving multiple people and conversations. Maybe the Job entry in my data book looks like this;</p>
+<p><center>
+  <img alt="recruitment process" src="/images/structuring-job-hunt-1/app-process.jpg">
+</center></p>
+<p>All of the field entries tend to have things in common. They occur chronologically, involve people, and you definitely want to take notes. But, there are an un-specified number of milestones here, and each milestone can have a flexible number of people as well as optional fields, such as the "location" of the first event.</p>
+<p>If I'm trying to keep track of these, along with say, conversations and facts about the people in my network, how does it make sense to store this information? I think it becomes pretty evident that a record-based relational solution doesn't quite seem right... Instead, I need something <em>unstructured</em> and <em>flexible</em>. I'm considering <strong>document driven</strong> and <strong>graph</strong> solutions. Or maybe a combination of both?</p>
+<p>Stay tuned for more!</p></div>
+	<!-- <hr>
+	<h2>Comments</h2>
+ -->
+</div>
+		</div>
+	</div> 	<!-- <hr> -->
+</div> <!-- /container -->
+<footer class="aw-footer bg-danger">
+	<div class="container"> <!-- footer -->
+		<div class="row">
+			<div class="col-md-10 col-md-offset-1">
+				<div class="row">
+					<div class="col-md-3">
+						<h4>Navigation</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="">once upon a datum</a></li>
+							<li><a href="/pages/about.html"><i class="fa fa-about "></i> about</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Author</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="https://www.linkedin.com/in/katieaszklar/">linkedin</a></li>
+							<li><a href="https://github.com/kaszklar">github</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Categories</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="/category/how-tos.html">how tos (2)</a></li>
+							<li><a href="/category/musings.html">musings (1)</a></li>
+							<li><a href="/category/projects.html">projects (2)</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Links</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="https://pudding.cool/">The Pudding</a></li>
+							<li><a href="https://numfocus.org/">I ♡ Open Source</a></li>
+							<li><a href="https://pysal.org/">PySAL</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12 text-center center-block aw-bottom">
+			<p>&copy; katie 2018 - 2021</p>
+			<p>Powered by Pelican</p>
+		</div>
+	</div>
+</div>
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+	$("div.collapseheader").click(function () {
+		$header = $(this).children("span").first();
+		$codearea = $(this).children(".input_area");
+		$codearea.slideToggle(500, function () {
+			$header.text(function () {
+				return $codearea.is(":visible") ? "Collapse Code" : "Expand Code";
+			});
+		});
+	});
+});
+</script>
+</body>
+</html>

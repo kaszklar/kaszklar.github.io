@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Archive — once upon a datum</title>
+	<meta name="description" content="The archives page, find old stuff organized by date.">
+	<meta name="author" content="katie">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+	<!--[if lt IE 9]>
+		<script src="/theme/html5.js"></script>
+		<![endif]-->
+	<link href="/theme/css/ipython.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/simplex/bootstrap.min.css" rel="stylesheet">
+	<link href="/theme/css/local.css" rel="stylesheet">
+	<link href="/theme/css/pygments.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+	<div class="page-header">
+		<h1><a href="/">once upon a datum</a>
+			<br>	</div>
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+
+<h1>Archives</h1>
+
+<table class="table">
+    <tbody>
+        <tr>
+        <td>04 Nov 2020</td>
+        <td><a href='/structuring-the-job-hunt-pt-1.html'>Structuring the Job Hunt pt 1</a></td>
+        </tr>
+        <tr>
+        <td>16 Aug 2020</td>
+        <td><a href='/go-with-the-mlflow.html'>Go with the (ML)Flow</a></td>
+        </tr>
+        <tr>
+        <td>05 May 2020</td>
+        <td><a href='/introducing-zipmigo.html'>Introducing Zipmigo</a></td>
+        </tr>
+        <tr>
+        <td>10 Oct 2019</td>
+        <td><a href='/dont-forget-your-abcds.html'>Don't Forget Your ABCD's</a></td>
+        </tr>
+        <tr>
+        <td>08 Sep 2018</td>
+        <td><a href='/google-big-query-for-newbs-by-a-newb.html'>Google Big Query For Newbs (By a Newb)</a></td>
+        </tr>
+    </tbody>
+</table>
+
+
+		</div>
+	</div> 	<!-- <hr> -->
+</div> <!-- /container -->
+<footer class="aw-footer bg-danger">
+	<div class="container"> <!-- footer -->
+		<div class="row">
+			<div class="col-md-10 col-md-offset-1">
+				<div class="row">
+					<div class="col-md-3">
+						<h4>Navigation</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="">once upon a datum</a></li>
+							<li><a href="/pages/about.html"><i class="fa fa-about "></i> about</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Author</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="https://www.linkedin.com/in/katieaszklar/">linkedin</a></li>
+							<li><a href="https://github.com/kaszklar">github</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Categories</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="/category/how-tos.html">how tos (2)</a></li>
+							<li><a href="/category/musings.html">musings (1)</a></li>
+							<li><a href="/category/projects.html">projects (2)</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Links</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="https://pudding.cool/">The Pudding</a></li>
+							<li><a href="https://numfocus.org/">I ♡ Open Source</a></li>
+							<li><a href="https://pysal.org/">PySAL</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12 text-center center-block aw-bottom">
+			<p>&copy; katie 2018 - 2021</p>
+			<p>Powered by Pelican</p>
+		</div>
+	</div>
+</div>
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+	$("div.collapseheader").click(function () {
+		$header = $(this).children("span").first();
+		$codearea = $(this).children(".input_area");
+		$codearea.slideToggle(500, function () {
+			$header.text(function () {
+				return $codearea.is(":visible") ? "Collapse Code" : "Expand Code";
+			});
+		});
+	});
+});
+</script>
+</body>
+</html>

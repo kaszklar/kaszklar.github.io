@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Google Big Query For Newbs (By a Newb) — once upon a datum</title>
+	<meta name="description" content="Title: Google Big Query For Newbs (By a Newb); Date: 2018-09-08; Author: katie">
+	<meta name="author" content="katie">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+	<!--[if lt IE 9]>
+		<script src="/theme/html5.js"></script>
+		<![endif]-->
+	<link href="/theme/css/ipython.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/simplex/bootstrap.min.css" rel="stylesheet">
+	<link href="/theme/css/local.css" rel="stylesheet">
+	<link href="/theme/css/pygments.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+	<div class="page-header">
+		<h1><a href="/">once upon a datum</a>
+			<br>	</div>
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+<div class="article" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="text-center article-header">
+		<h1 itemprop="name headline" class="article-title">Google Big Query For Newbs (By a Newb)</h1>
+		<!-- <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+			<h4 itemprop="name">katie</h4>
+		</span> -->
+		<time datetime="2018-09-08T00:00:00-04:00" itemprop="datePublished">Sat 08 September 2018</time>
+	</div>
+	<div>
+		Category:
+		<span itemprop="articleSection">
+			<a href="/category/how-tos.html" rel="category">how tos</a>
+		</span>
+	</div>
+	<div itemprop="articleBody" class="article-body"><blockquote>
+<p>BigQuery is a RESTful web service that enables interactive analysis of massively large datasets working in conjunction with Google Storage.<br>
+-<a href="https://en.wikipedia.org/wiki/BigQuery">Wikipedia</a></p>
+</blockquote>
+<p>Up until my final project at Metis I had always downloaded csv's and then, if they were sizable, used them to build out my own tables and database to work with. However, for this final passion project, I really wanted to explore the Global Fishing Watch data. After requesting access, I learned that it was exclusively available on Google Big Query - needless to say I was intimidated! GBQ, as I'll now refer to it, is just one member of an entire host of cloud computing services. In order to work with the data that I wanted, I needed to navigate that world - a process that was painstaking at times. I've written this blog post to assist other fledgling data scientists.</p>
+<h2>Part I: Downloading Results</h2>
+<p>In GBQ, once you have access to some tables, it isn't hard to figure out how to query them. What I struggled with was downloading the results to play with!</p>
+<p><img alt="too big" src="/images/gbq/too-big.png"></p>
+<p>When I tried to download them, I was told that the results were too big. I don't know what the cut off is, but this error message was received from a 3.74MB result.</p>
+<p>In order to get around this, you will need to:</p>
+<ul>
+<li>create a project</li>
+<li>create a dataset</li>
+<li>copy the original tables into your dataset, OR query the original data and save those results as tables in your dataset</li>
+</ul>
+<p>You can create a project using the main <a href="https://console.cloud.google.com/home/dashboard">Google Cloud Console Dashboard</a>.</p>
+<p><img alt="new project" src="/images/gbq/new-project.png"></p>
+<p>GBQ is giving away 1 terabyte (or $300 worth) of free usage to new users for up to 365 days. You should see that at the top of your browser window. Unfortunately, you will still need to <a href="https://cloud.google.com/billing/docs/how-to/modify-project">set up a billing account</a> for your new project. Google was very explicit that you won't receive any surprise bills; they will notify you when your trial is over and you are about to be charged.</p>
+<p>After creating a project, you will need to create a "dataset" in that project before being able to copy any tables into it. I spent much more time than I care to admit searching around and around google cloud before figuring out how to do this. You can accomplish this task by clicking on the little menu expansion arrow next to your project name, directly in GBQ.</p>
+<p><img alt="new dataset" src="/images/gbq/new-dataset.png"></p>
+<p>Now, you can copy complete tables or queries into <em>your</em> dataset, then download (it will, however, come in chunks). This is how I first approached the issue, but later moved on to importing my queries directly into a jupyter notebook. </p>
+<h2>Part II: Jupyter Notebook</h2>
+<p>If you're like me and you do most of your work in notebooks, there is a way to import your queries directly into a dataframe using a few libraries. As I work in python, this section will be a bit specific to that language.
+Before we even open jupyter though, we will need to make sure google knows that we are authorized. This process also took me quite a while, and I suspect that there may be a more elegant way to do this. Generally speaking, you will need to 
+* create and download credentials and then 
+* authenticate yourself in your notebook.</p>
+<h3>Credentials</h3>
+<p>Do do this, you will need to create a service account. It allows you to grant access to many people and set permission levels (even if that person is just yourself 😛 ) You can do this on the <a href="https://console.cloud.google.com/apis/credentials/serviceaccountkey">service account key page</a>. The instructions below come from <a href="https://cloud.google.com/docs/authentication/production">here</a>.</p>
+<ol>
+<li>Go to the Create service account key page in the GCP Console.</li>
+<li>From the Service account drop-down list, select New service account.</li>
+<li>Enter a name into the Service account name field. (I chose my own name 💁)</li>
+<li>From the Role drop-down list, select Project &gt; Owner. Chose the JSON key type.</li>
+<li>Click Create. A JSON file that contains your key downloads to your computer.</li>
+</ol>
+<p>Now save that file &amp; don't lose it! If you aren't familiar with using keys, this is a unique identifier for <em>you</em> so it is best kept private. Often times these types of files cannot be downloaded again. This one is particular to your google account <em>and</em> your specific dataset.</p>
+<h3>Notebooks</h3>
+<p>You can do this process on your local machine or any cloud instance. I suggest working in the cloud because you <em>won't</em> be warned if your query can't be fully stored in local memory... you will just recieve a subset of your query.</p>
+<p>You will need to install the following libraries: </p>
+<p><code>pip install google-auth</code>  <br>
+<code>pip install pandas-gbq -U</code>   </p>
+<p>Import them:  </p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">google.oauth2</span> <span class="kn">import</span> <span class="n">service_account</span>    
+<span class="kn">from</span> <span class="nn">pandas.io</span> <span class="kn">import</span> <span class="n">gbq</span>
+</code></pre></div>
+
+<p>Credential yourself:  </p>
+<div class="highlight"><pre><span></span><code>   <span class="n">credentials</span> <span class="o">=</span> <span class="n">service_account</span><span class="o">.</span><span class="n">Credentials</span><span class="o">.</span><span class="n">from_service_account_file</span><span class="p">(</span>
+   <span class="s1">&#39;/path/to/your_credentials.json&#39;</span>
+</code></pre></div>
+
+<p>Define your query as a string using triple quotes for readability:  </p>
+<div class="highlight"><pre><span></span><code><span class="n">query</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">SELECT </span>
+<span class="s2">   *</span>
+<span class="s2">FROM </span>
+<span class="s2">   YOUR_DATASET.YOUR_TABLE</span>
+<span class="s2">&quot;&quot;&quot;</span>
+</code></pre></div>
+
+<p>Now run your query and assign it to a dataframe:  </p>
+<div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gbq</span><span class="o">.</span><span class="n">read_gbq</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">project_id</span><span class="o">=</span><span class="s1">&#39;YOUR_PROJECT_ID&#39;</span><span class="p">,</span> <span class="n">dialect</span> <span class="o">=</span><span class="s1">&#39;standard&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+<p>The first time you do this, you will be prompted to confirm your google account. After you run the above, you will be prompted to click on a link, log in, retrieve a key, and input that into your notebook. Once you do that all future queries will run smoothly.   </p>
+<p>🎉 You are now playing with fire! Time to analyze. </p>
+<p>As I mentioned above, this was a trial and error process for me. I want to thank my good friend <a href="http://www.twitter.com/anahitabahri">Anahita</a> for her invaluable assistance, as well as for her moral support in my final project.<br>
+If you have any suggestions for improving this process, feel free to reach out!</p></div>
+	<!-- <hr>
+	<h2>Comments</h2>
+ -->
+</div>
+		</div>
+	</div> 	<!-- <hr> -->
+</div> <!-- /container -->
+<footer class="aw-footer bg-danger">
+	<div class="container"> <!-- footer -->
+		<div class="row">
+			<div class="col-md-10 col-md-offset-1">
+				<div class="row">
+					<div class="col-md-3">
+						<h4>Navigation</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="">once upon a datum</a></li>
+							<li><a href="/pages/about.html"><i class="fa fa-about "></i> about</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Author</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="https://www.linkedin.com/in/katieaszklar/">linkedin</a></li>
+							<li><a href="https://github.com/kaszklar">github</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Categories</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="/category/how-tos.html">how tos (2)</a></li>
+							<li><a href="/category/musings.html">musings (1)</a></li>
+							<li><a href="/category/projects.html">projects (2)</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Links</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="https://pudding.cool/">The Pudding</a></li>
+							<li><a href="https://numfocus.org/">I ♡ Open Source</a></li>
+							<li><a href="https://pysal.org/">PySAL</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12 text-center center-block aw-bottom">
+			<p>&copy; katie 2018 - 2021</p>
+			<p>Powered by Pelican</p>
+		</div>
+	</div>
+</div>
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+	$("div.collapseheader").click(function () {
+		$header = $(this).children("span").first();
+		$codearea = $(this).children(".input_area");
+		$codearea.slideToggle(500, function () {
+			$header.text(function () {
+				return $codearea.is(":visible") ? "Collapse Code" : "Expand Code";
+			});
+		});
+	});
+});
+</script>
+</body>
+</html>

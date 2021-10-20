@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Go with the (ML)Flow — once upon a datum</title>
+	<meta name="description" content="Title: Go with the (ML)Flow; Date: 2020-08-16; Author: katie">
+	<meta name="author" content="katie">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+	<!--[if lt IE 9]>
+		<script src="/theme/html5.js"></script>
+		<![endif]-->
+	<link href="/theme/css/ipython.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/simplex/bootstrap.min.css" rel="stylesheet">
+	<link href="/theme/css/local.css" rel="stylesheet">
+	<link href="/theme/css/pygments.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+	<div class="page-header">
+		<h1><a href="/">once upon a datum</a>
+			<br>	</div>
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+<div class="article" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="text-center article-header">
+		<h1 itemprop="name headline" class="article-title">Go with the (ML)Flow</h1>
+		<!-- <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+			<h4 itemprop="name">katie</h4>
+		</span> -->
+		<time datetime="2020-08-16T00:00:00-04:00" itemprop="datePublished">Sun 16 August 2020</time>
+	</div>
+	<div>
+		Category:
+		<span itemprop="articleSection">
+			<a href="/category/how-tos.html" rel="category">how tos</a>
+		</span>
+	</div>
+	<div itemprop="articleBody" class="article-body"><p>I hate to admit it, but when I first started using programming for predictive analytics, I was super disorganized. Which model performed best again? Guess I gotta go back and run all my cells in my "modelling notebook" over again... and clean them all up. GUILTY. 🙋‍♀️ It was pretty evident to me that my work flow was unsustainable. But how to improve? </p>
+<p>I initally thought about logging my activity in a txt file. But, could I always be trusted to remember? Plus, I had to plan out a schema. There had to have been something better. This is why I was <em>so excited</em> to learn about <a href="https://mlflow.org/">mlflow</a>.</p>
+<h3>What is mlflow?</h3>
+<p>mlflow allows you to iteratively experiment. It organizes you and keeps your work transparent, reproducible, scalable, and portable. </p>
+<p>On the most basic level, the mlflow <a href="https://mlflow.org/docs/0.1.0/tracking.html">Tracking module</a> turns your workflow into <strong>experiments</strong> that have <strong>runs</strong>. This brings some scientific rigor to our approach. We can apply various "treatments" and compare the results. mlflow will even serve up a clean user interface so that we can explore our work visually. </p>
+<h3>Getting Started</h3>
+<p>I'll run through a basic workflow using the famous seattle housing prices dataset, predicting whether the home is on the water or not. mlflow is available via pip or conda. </p>
+<p>There's certainly quite a bit of flexibility in how you set up your environment; you can declare one programmatically or via the command line. If you set the <code>MLFLOW_EXPERIMENT_ID</code> environment variable, all the runs will infer the experiment id. Runs can be executed one at a time using with, or or individually - you could have multiple runs going on at the same time. </p>
+<p>In this experiment, I'll be using the sklearn framework, but the developers are building out frameworks for tensor flow &amp; keras, gluon, xgboost, lightgbm, and spark. I'm declaring everything programmatically here.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">mlflow</span>
+<span class="kn">import</span> <span class="nn">mlflow.sklearn</span> 
+</code></pre></div>
+
+<p>There's a separate import statement for the sklearn module, which is specially tailored to log and implement sklearn models.</p>
+<h3>Experiment!</h3>
+<ol>
+<li>Build, munge, explore, and analyse your data. Plan out how you will tackle the task at hand.</li>
+<li>Initialize an experiment with a name and the directory where we want to store everything. This could also be done via the command line. <code>exp_id = mlflow.create_experiment("houses", artifact_location= "./houses_artifacts")</code></li>
+<li>Now you can go one of two ways...<ol>
+<li>Use <code>with</code><br>
+    If you modularize everything out, you can write a function that executes the run all at once.<br>
+<code>def log_logit(experimentID, run_name, params, X_train, X_test, y_train, y_test):  
+      with mlflow.start_run(experiment_id=exp_id, run_name=run_name) as run:</code>
+   If going this route, you'll pass your params to your model using <code>(**params)</code>.</li>
+<li>Start and end each run manually.<br>
+    Use <code>mlflow.start_run(experiment_id, run_name)</code>, log your model, parameters, metrics, and artifacts, then <code>mlflow.end_run()</code> once you're done. This is how the code below is laid out. If you go this route, you can also nest runs. </li>
+</ol>
+</li>
+</ol>
+<h4>Logging</h4>
+<p>Here's where we get into the mlflow. Take for example my inital run. After splitting my data into the usual train/test, I dump all of my features into my first model, get my preds, f1 score, and plot the confusion matrix. I want to log all of these things as a run.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># run model</span>
+<span class="n">logit1</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">penalty</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;lbfgs&#39;</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">logit1</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">preds</span> <span class="o">=</span> <span class="n">logit1</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+<span class="c1"># get metrics</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">preds</span><span class="p">)</span>
+<span class="n">confusion</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">preds</span><span class="p">)</span>
+
+<span class="c1"># plot the confusion matrix</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">confusion</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues&#39;</span><span class="p">,</span><span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;True labels&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Predicted labels&quot;</span><span class="p">)</span>
+<span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Confusion Matrix&quot;</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Now, I call <code>mlflow.start_run(experiment_id=exp_id, run_name="naive backwards")</code> and start recording all of my assets for this run. </p>
+<p>With the tracking module, we can log;</p>
+<ul>
+<li>the models themselves</li>
+<li>model parameters</li>
+<li>metrics</li>
+<li>artifacts, and </li>
+<li>tags (a key value pair, set using <code>mlflow.set_tag()</code>, not shown here)</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># log model</span>
+<span class="n">mlflow</span><span class="o">.</span><span class="n">sklearn</span><span class="o">.</span><span class="n">log_model</span><span class="p">(</span><span class="n">logit1</span><span class="p">,</span> <span class="s2">&quot;ridge logit&quot;</span><span class="p">)</span>
+
+<span class="c1"># log params individually</span>
+<span class="n">mlflow</span><span class="o">.</span><span class="n">log_param</span><span class="p">(</span><span class="s1">&#39;penalty&#39;</span><span class="p">,</span> <span class="s1">&#39;l2&#39;</span><span class="p">)</span>
+<span class="n">mlflow</span><span class="o">.</span><span class="n">log_param</span><span class="p">(</span><span class="s1">&#39;solver&#39;</span><span class="p">,</span> <span class="s1">&#39;lbfgs&#39;</span><span class="p">)</span>
+<span class="n">mlflow</span><span class="o">.</span><span class="n">log_param</span><span class="p">(</span><span class="s1">&#39;max_iter&#39;</span><span class="p">,</span><span class="s1">&#39;1000&#39;</span><span class="p">)</span>
+
+<span class="c1"># log metrics</span>
+<span class="n">mlflow</span><span class="o">.</span><span class="n">log_metric</span><span class="p">(</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="n">f1</span><span class="p">)</span>
+<span class="n">t_n</span><span class="p">,</span> <span class="n">f_p</span><span class="p">,</span> <span class="n">f_n</span><span class="p">,</span> <span class="n">t_p</span> <span class="o">=</span> <span class="n">confusion</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+<span class="n">mlflow</span><span class="o">.</span><span class="n">log_metric</span><span class="p">(</span><span class="s2">&quot;true neg&quot;</span><span class="p">,</span> <span class="n">t_n</span><span class="p">)</span>
+<span class="n">mlflow</span><span class="o">.</span><span class="n">log_metric</span><span class="p">(</span><span class="s2">&quot;false pos&quot;</span><span class="p">,</span> <span class="n">f_p</span><span class="p">)</span>
+<span class="n">mlflow</span><span class="o">.</span><span class="n">log_metric</span><span class="p">(</span><span class="s2">&quot;false neg&quot;</span><span class="p">,</span> <span class="n">f_n</span><span class="p">)</span>
+<span class="n">mlflow</span><span class="o">.</span><span class="n">log_metric</span><span class="p">(</span><span class="s2">&quot;true pos&quot;</span><span class="p">,</span> <span class="n">t_p</span><span class="p">)</span>
+
+<span class="c1"># log the confusion matrix plot as an artifact</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">confusion</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues&#39;</span><span class="p">,</span><span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;True labels&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Predicted labels&quot;</span><span class="p">)</span>
+<span class="n">title</span> <span class="o">=</span> <span class="n">mlflow</span><span class="o">.</span><span class="n">active_run</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">run_id</span> <span class="o">+</span> <span class="s2">&quot; Confusion Matrix&quot;</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+
+<span class="c1"># log confusion matrix to temp file</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;confusionmatrix-&quot;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;.png&quot;</span><span class="p">)</span>
+<span class="n">temp_name</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">name</span>
+<span class="k">try</span><span class="p">:</span>
+  <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">temp_name</span><span class="p">)</span>
+  <span class="n">mlflow</span><span class="o">.</span><span class="n">log_artifact</span><span class="p">(</span><span class="n">temp_name</span><span class="p">,</span> <span class="s2">&quot;confusionmatrix.png&quot;</span><span class="p">)</span>
+<span class="k">finally</span><span class="p">:</span>
+  <span class="n">temp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span> 
+</code></pre></div>
+
+<p>Rise and repeat, or modularize everything out a la step 3.1 above. </p>
+<h3>Comparing results</h3>
+<p>Once you've completed your runs to your satisfaction, rev up your shell. In your working directly, run <code>mlflow ui</code>. Point your browser to <a href="http://localhost:5000/">localhost:5000</a> and you should see the user interface, which allows you to explore your results. Alternatively, the <a href="https://mlflow.org/docs/0.1.0/tracking.html#tracking-ui">tracking uri</a> can be set to point to a remote server via an env variable or <code>set_tracking_ui()</code>.  </p>
+<p><img alt="experiment homepage" src="/images/go-mlflow/runs.png"></p>
+<p>On the left hand side, all of your experiments in the workspace are listed. At the top, I can add my own notes about the experiment. Tags will appear here as well. In the screen shot above, you can see my two previous runs listed in the table. I can download them all to a csv, or use the 'compare' button at the top of the table which allows for a side-by-side, metric-by-metric comparison, including some built in contour, scaling, and parallel coordinate plots for chosing the best model for your question at hand.</p>
+<h3>Pro Tips</h3>
+<ul>
+<li>
+<p>Get creative with your <strong>artifacts</strong></p>
+<p>If we try hard enough (or just 🥒 enough), artifacts can be <em>anything</em>... including images, models, and even data files</p>
+</li>
+<li>
+<p>Use  <strong>tempfile</strong> <a href="https://docs.python.org/3/library/tempfile.html">↗</a> for temporary file &amp; directory handling</p>
+<p>In the example above, I turned a matplotlib fig object into a tempfile, logged it in mlflow, and then closed the file. No messy clean up locally 👍🏼</p>
+</li>
+<li>
+<p>Before starting, consider your <strong>meta data</strong> such as run names and tags </p>
+<p>"Naive backwards" and "lasso" may initially be informative names but with further development may not be as appropriate.</p>
+</li>
+</ul>
+<h3>Even more functionality...</h3>
+<p>Additional features include a module for packaging up your tracking workflows, model deployment, and a ~model registry~. But those are topics for another day. </p></div>
+	<!-- <hr>
+	<h2>Comments</h2>
+ -->
+</div>
+		</div>
+	</div> 	<!-- <hr> -->
+</div> <!-- /container -->
+<footer class="aw-footer bg-danger">
+	<div class="container"> <!-- footer -->
+		<div class="row">
+			<div class="col-md-10 col-md-offset-1">
+				<div class="row">
+					<div class="col-md-3">
+						<h4>Navigation</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="">once upon a datum</a></li>
+							<li><a href="/pages/about.html"><i class="fa fa-about "></i> about</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Author</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="https://www.linkedin.com/in/katieaszklar/">linkedin</a></li>
+							<li><a href="https://github.com/kaszklar">github</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Categories</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="/category/how-tos.html">how tos (2)</a></li>
+							<li><a href="/category/musings.html">musings (1)</a></li>
+							<li><a href="/category/projects.html">projects (2)</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Links</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="https://pudding.cool/">The Pudding</a></li>
+							<li><a href="https://numfocus.org/">I ♡ Open Source</a></li>
+							<li><a href="https://pysal.org/">PySAL</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12 text-center center-block aw-bottom">
+			<p>&copy; katie 2018 - 2021</p>
+			<p>Powered by Pelican</p>
+		</div>
+	</div>
+</div>
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+	$("div.collapseheader").click(function () {
+		$header = $(this).children("span").first();
+		$codearea = $(this).children(".input_area");
+		$codearea.slideToggle(500, function () {
+			$header.text(function () {
+				return $codearea.is(":visible") ? "Collapse Code" : "Expand Code";
+			});
+		});
+	});
+});
+</script>
+</body>
+</html>

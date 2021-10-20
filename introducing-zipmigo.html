@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Introducing Zipmigo — once upon a datum</title>
+	<meta name="description" content="Title: Introducing Zipmigo; Date: 2020-05-05; Author: katie">
+	<meta name="author" content="katie">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+	<!--[if lt IE 9]>
+		<script src="/theme/html5.js"></script>
+		<![endif]-->
+	<link href="/theme/css/ipython.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/simplex/bootstrap.min.css" rel="stylesheet">
+	<link href="/theme/css/local.css" rel="stylesheet">
+	<link href="/theme/css/pygments.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+	<div class="page-header">
+		<h1><a href="/">once upon a datum</a>
+			<br>	</div>
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+<div class="article" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="text-center article-header">
+		<h1 itemprop="name headline" class="article-title">Introducing Zipmigo</h1>
+		<!-- <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+			<h4 itemprop="name">katie</h4>
+		</span> -->
+		<time datetime="2020-05-05T00:00:00-04:00" itemprop="datePublished">Tue 05 May 2020</time>
+	</div>
+	<div>
+		Category:
+		<span itemprop="articleSection">
+			<a href="/category/projects.html" rel="category">projects</a>
+		</span>
+	</div>
+	<div itemprop="articleBody" class="article-body"><p>Please welcome to the world my new 👶, <a href="https://github.com/kaszklar/zipmigo">zipmigo</a>! Zipmigo is a python package that aims to help analysts download and unarchive zipfiles remotely.</p>
+<p>I was recently given the opportunity to develop some notebooks for teaching GIS and spatial econometrics in python for a professor of mine. Having taken the course previously, I had a good idea of the level of exposure students had to programming and the shell. I also began using the same code over and over again to download shape file archives, which is a sure sign you should start modularizing. With all of that in mind, I began working on a script to download and unzip those archives so that students working in the cloud wouldn't have to muddle around trying to figure out why a simple http request doesn't work, or wonder where their file got unzipped to.</p>
+<p>Recrusive directory structure is one of my biggest pet peeves, so the true 🌟 of this little library is that it checks the top level of the archive and will unzip to the current directory or an appropriately named subdirectory.   </p>
+<p>You can get it via <code>pip install zipmigo</code>, and check out some example functionality in the <a href="https://github.com/kaszklar/zipmigo">read me</a>. </p></div>
+	<!-- <hr>
+	<h2>Comments</h2>
+ -->
+</div>
+		</div>
+	</div> 	<!-- <hr> -->
+</div> <!-- /container -->
+<footer class="aw-footer bg-danger">
+	<div class="container"> <!-- footer -->
+		<div class="row">
+			<div class="col-md-10 col-md-offset-1">
+				<div class="row">
+					<div class="col-md-3">
+						<h4>Navigation</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="">once upon a datum</a></li>
+							<li><a href="/pages/about.html"><i class="fa fa-about "></i> about</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Author</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="https://www.linkedin.com/in/katieaszklar/">linkedin</a></li>
+							<li><a href="https://github.com/kaszklar">github</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Categories</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="/category/how-tos.html">how tos (2)</a></li>
+							<li><a href="/category/musings.html">musings (1)</a></li>
+							<li><a href="/category/projects.html">projects (2)</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Links</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="https://pudding.cool/">The Pudding</a></li>
+							<li><a href="https://numfocus.org/">I ♡ Open Source</a></li>
+							<li><a href="https://pysal.org/">PySAL</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12 text-center center-block aw-bottom">
+			<p>&copy; katie 2018 - 2021</p>
+			<p>Powered by Pelican</p>
+		</div>
+	</div>
+</div>
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+	$("div.collapseheader").click(function () {
+		$header = $(this).children("span").first();
+		$codearea = $(this).children(".input_area");
+		$codearea.slideToggle(500, function () {
+			$header.text(function () {
+				return $codearea.is(":visible") ? "Collapse Code" : "Expand Code";
+			});
+		});
+	});
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Don't Forget Your ABCD's — once upon a datum</title>
+	<meta name="description" content="Title: Don't Forget Your ABCD's; Date: 2019-10-10; Author: katie">
+	<meta name="author" content="katie">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+	<!--[if lt IE 9]>
+		<script src="/theme/html5.js"></script>
+		<![endif]-->
+	<link href="/theme/css/ipython.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/simplex/bootstrap.min.css" rel="stylesheet">
+	<link href="/theme/css/local.css" rel="stylesheet">
+	<link href="/theme/css/pygments.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+	<div class="page-header">
+		<h1><a href="/">once upon a datum</a>
+			<br>	</div>
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+<div class="article" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="text-center article-header">
+		<h1 itemprop="name headline" class="article-title">Don't Forget Your ABCD's</h1>
+		<!-- <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+			<h4 itemprop="name">katie</h4>
+		</span> -->
+		<time datetime="2019-10-10T00:00:00-04:00" itemprop="datePublished">Thu 10 October 2019</time>
+	</div>
+	<div>
+		Category:
+		<span itemprop="articleSection">
+			<a href="/category/musings.html" rel="category">musings</a>
+		</span>
+	</div>
+	<div itemprop="articleBody" class="article-body"><p>This semester I am in a class in which we aim to analyze a "large" dataset. There is one text variable in particular that we want to draw some insight from.  </p>
+<p>We had just been told how to access the dataset <em>minutes</em> ago, and something along the lines of the below goes down.  </p>
+<blockquote>
+<p><strong>Professor:</strong> So how is it going? Any issues loading the data? Does anyone have any immediate insights?<br>
+<strong>Student 1:</strong> I made a word cloud of [variable of interest]... the most common words seem to be foo, bar, baz, etc.<br>
+<strong>Student 2:</strong> <em>I</em> made a word cloud of [other string column] and the most common words are foo2, bar2, baz2...<br>
+<strong>Professor:</strong> Great. <em>continues lecture</em><br>
+<strong>Me, after class to the Prof:</strong> Have you already done some analysis on this dataset? Did you know [variable of interest] is 68% null?<br>
+<strong>Professor:</strong> Actually, no, I haven't looked at it yet. That's... certainly good to know. <em>drops some more knowledge</em>  </p>
+</blockquote>
+<p>Next class, she called on me to bring this up, and I swear you could have heard a pin drop. 🤦‍♀️    </p>
+<p>As with all of my classes, there are people in there much smarter than me - they know more models or more programming packages or more <em>something</em>. The students who spoke up initially already have real world experience in the field, but they forgot the first rule in the book... ABCD! <strong>A</strong>lways <strong>B</strong>e <strong>C</strong>hecking your <strong>D</strong>ata.    </p>
+<p>Why? Because your data is almost never perfectly clean. I had a dataset come through where null values were coded as a string <code>\N</code>... yeeeaaaaah.... Good luck finding that! At its most critical, your checks can alert you that something is seriously wrong. At its most benign, this can generate questions for later and give you an idea of the amount of cleaning you <em>will</em> need to do or lead to new avenues of analysis!  </p>
+<p>Here are some of the things I do (to a 🐼 data frame) before I even begin:  </p>
+<ul>
+<li>Call <code>.head()</code> to peak at the first few rows. You can pass a number to investigate a larger amount of rows; <code>.tail()</code> also exists. </li>
+<li>Check for nulls</li>
+<li>Maybe rename columns</li>
+<li>For continuous variables, look at the range and check for outliers</li>
+<li>Maybe adjust how your program displays numbers with digits, so it is more interpretable</li>
+<li>For categoricals, check the number of unique elements with <code>.nunique()</code>. This can immediately alert you to issues with text</li>
+<li>Make some quick histograms to check distributions</li>
+<li>If the dataset is large enough that memory may be an issue, make sure that the datatypes are appropriate for the content of each variable</li>
+</ul>
+<p>I'll close out with one way to visualize null values in a dataset .   </p>
+<p>While this may not be practical on a larger scale without parallelization, you can use seaborn to create a heat map of your entire data frame. In the below example, I've obscured some information about what's in there, but I will tell you that the observations are in chronological order. In the absense of meta data, I think this tells a lot about this dataset.  </p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="k">as</span> <span class="nn">mpatches</span>
+
+<span class="c1">#create the graph</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">isnull</span><span class="p">(),</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Missing Values&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Columns&quot;</span><span class="p">)</span>
+
+<span class="c1">#create a legend</span>
+<span class="n">avail</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;available data&#39;</span><span class="p">)</span>
+<span class="n">missing</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;beige&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;missing data&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="p">[</span><span class="n">avail</span><span class="p">,</span> <span class="n">missing</span><span class="p">])</span>
+</code></pre></div>
+</td></tr></table>
+<p><img alt="null heatmap" src="/images/always-be-checking/null-heatmap.png"></p></div>
+	<!-- <hr>
+	<h2>Comments</h2>
+ -->
+</div>
+		</div>
+	</div> 	<!-- <hr> -->
+</div> <!-- /container -->
+<footer class="aw-footer bg-danger">
+	<div class="container"> <!-- footer -->
+		<div class="row">
+			<div class="col-md-10 col-md-offset-1">
+				<div class="row">
+					<div class="col-md-3">
+						<h4>Navigation</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="">once upon a datum</a></li>
+							<li><a href="/pages/about.html"><i class="fa fa-about "></i> about</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Author</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="https://www.linkedin.com/in/katieaszklar/">linkedin</a></li>
+							<li><a href="https://github.com/kaszklar">github</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Categories</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="/category/how-tos.html">how tos (2)</a></li>
+							<li><a href="/category/musings.html">musings (1)</a></li>
+							<li><a href="/category/projects.html">projects (2)</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Links</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="https://pudding.cool/">The Pudding</a></li>
+							<li><a href="https://numfocus.org/">I ♡ Open Source</a></li>
+							<li><a href="https://pysal.org/">PySAL</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12 text-center center-block aw-bottom">
+			<p>&copy; katie 2018 - 2021</p>
+			<p>Powered by Pelican</p>
+		</div>
+	</div>
+</div>
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+	$("div.collapseheader").click(function () {
+		$header = $(this).children("span").first();
+		$codearea = $(this).children(".input_area");
+		$codearea.slideToggle(500, function () {
+			$header.text(function () {
+				return $codearea.is(":visible") ? "Collapse Code" : "Expand Code";
+			});
+		});
+	});
+});
+</script>
+</body>
+</html>
